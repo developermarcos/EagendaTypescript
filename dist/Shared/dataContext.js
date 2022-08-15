@@ -1,8 +1,8 @@
 export class DataContext {
     constructor() {
         this.stringConnection = 'E-agenda';
-        this.localStorage = localStorage;
-        this.dataContext = JSON.parse(localStorage.getItem(this.stringConnection) || '[]');
+        this.localStorage = window.localStorage;
+        this.dataContext = JSON.parse(this.localStorage.getItem(this.stringConnection) || '[]');
     }
     getDados(tipoDado) {
         return this.dataContext[tipoDado] || [];

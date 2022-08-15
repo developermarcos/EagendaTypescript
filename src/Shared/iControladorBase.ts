@@ -1,4 +1,4 @@
-interface IControladorbase {
+export interface IControladorbase {
   inserir() : void;
   editar() : void;
   excluir() : void;

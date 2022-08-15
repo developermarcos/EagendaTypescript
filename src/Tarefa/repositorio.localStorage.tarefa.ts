@@ -1,7 +1,7 @@
-import { Prioridade } from "./enum.prioridade.tarefa";
-import { Tarefa } from "./tarefa";
-import { IRepositorioTarefa } from "./iRepositorio.tarefa";
-import { DataContext } from "../Shared/dataContext";
+import { Prioridade } from "./enum.prioridade.tarefa.js";
+import { Tarefa } from "./tarefa.js";
+import { IRepositorioTarefa } from "./iRepositorio.tarefa.js";
+import { DataContext } from "../Shared/dataContext.js";
 
 export class RepositorioTarefaLocalStorage implements IRepositorioTarefa{
   

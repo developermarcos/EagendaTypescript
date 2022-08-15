@@ -1,4 +1,4 @@
-import { EntidadeBase } from "./entidadeBase";
+import { EntidadeBase } from "./entidadeBase.js";
 
 export interface IRepositorioBase<T>{
   inserir(novoRegistro : T) : void;

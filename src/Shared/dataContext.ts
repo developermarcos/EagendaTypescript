@@ -5,8 +5,8 @@ export class DataContext{
   private dataContext : [];
 
   constructor(){
-    this.localStorage = localStorage;
-    this.dataContext = JSON.parse(localStorage.getItem(this.stringConnection) || '[]');
+    this.localStorage = window.localStorage;
+    this.dataContext = JSON.parse(this.localStorage.getItem(this.stringConnection) || '[]');
   }
 
   getDados(tipoDado : string){

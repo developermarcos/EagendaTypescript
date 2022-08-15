@@ -1,6 +1,6 @@
-import { Item } from "./item.tarefa";
-import { Prioridade } from "./enum.prioridade.tarefa";
-import { EntidadeBase } from "../Shared/entidadeBase";
+import { Item } from "./item.tarefa.js";
+import { Prioridade } from "./enum.prioridade.tarefa.js";
+import { EntidadeBase } from "../Shared/entidadeBase.js";
 
 export class Tarefa extends EntidadeBase{
   prioridade : Prioridade;
@@ -9,7 +9,10 @@ export class Tarefa extends EntidadeBase{
   dataTermino : Date;
   itens : Item[];
 
-  calcularPercentualConclusaoItens() {
-    return this.itens.length / this.itens.filter(x => x.concluido === true).length;
-  }
+  // calcularPercentualConclusaoItens() {
+  //   if(!this.itens || this.itens.length == 0)
+  //     return 0;
+
+  //   return this.itens.length / this.itens.filter(x => x.concluido === true).length;
+  // }
 }
