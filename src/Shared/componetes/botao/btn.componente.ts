@@ -1,15 +1,15 @@
 import { TipoBotao} from "./enum.tipoBotao.list.js";
 export class Btn{
-  private botao : HTMLButtonElement;
+  private _botao : HTMLButtonElement;
 
   constructor(tipoBotao : TipoBotao, identificadorUnico : string){
-    this.botao = document.createElement('button');
-    this.botao.value = identificadorUnico;
+    this._botao = document.createElement('button');
+    this._botao.value = identificadorUnico;
     this.ConfigurarEstilo(tipoBotao);
   }
   
-  ObterBotao() : HTMLButtonElement{
-    return this.botao;
+  botao() : HTMLButtonElement{
+    return this._botao;
   }
   
   // Métodos privados
@@ -36,12 +36,12 @@ export class Btn{
   private SetarEstilo(tipoBotao : TipoBotao, classes : string[]) {
     
     for (let classe in classes){
-      this.botao.classList.add(classes[classe]);
+      this._botao.classList.add(classes[classe]);
     }
     
-    this.botao.type = 'button';
+    this._botao.type = 'button';
 
-    this.botao.textContent = tipoBotao;
+    this._botao.textContent = tipoBotao;
   }
   
 }

@@ -1,8 +1,10 @@
 // import { ControladorTarefa } from "./Tarefa/ControladorTarefa.js";
+import { GeradorComponente } from "./Shared/componetes/geradorComponente/html.componente.js";
 import { ControladorTarefa } from "./Tarefa/ControladorTarefa.js";
-const botoesEditar = document.getElementsByClassName('.btn-acoes')[0];
-botoesEditar === null || botoesEditar === void 0 ? void 0 : botoesEditar.addEventListener('click', () => {
-    console.log('aqui');
-});
-const controladorTarefa = new ControladorTarefa();
+const btnCadastrar = document.getElementById('cadastrar');
+const geradorComponente = new GeradorComponente();
+const controladorTarefa = new ControladorTarefa(geradorComponente);
 controladorTarefa.listarTodos();
+btnCadastrar === null || btnCadastrar === void 0 ? void 0 : btnCadastrar.addEventListener('click', () => {
+    controladorTarefa.inserir();
+});

@@ -1,5 +1,5 @@
 import { Prioridade } from "./enum.prioridade.tarefa.js";
-import { Tarefa } from "./tarefa.js";
+import { Tarefa } from "./model.tarefa.js";
 import { IRepositorioTarefa } from "./iRepositorio.tarefa.js";
 import { DataContext } from "../Shared/dataContext.js";
 

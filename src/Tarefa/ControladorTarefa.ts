@@ -4,26 +4,30 @@ import { DataContext } from "../Shared/dataContext.js";
 import { RepositorioTarefaLocalStorage } from "./repositorio.localStorage.tarefa.js";
 import { Btn } from "../Shared/componetes/botao/btn.componente.js";
 import { TipoBotao } from "../Shared/componetes/botao/enum.tipoBotao.list.js";
-import { Tarefa } from "./tarefa.js";
+import { Tarefa } from "./model.tarefa.js";
 import { Prioridade } from "./enum.prioridade.tarefa.js";
 import { Table } from "../Shared/componetes/table/table.componente.lis.js";
+import { GeradorComponente } from "../Shared/componetes/geradorComponente/html.componente.js";
+import { TelaCadastroTarefa } from "./Tela/tarefa.cadastrar.js";
 
 
 export class ControladorTarefa implements IControladorbase{
   repositorio : IRepositorioTarefa;
   tabela : HTMLTableElement;
   contextoDados : DataContext;
+  geradorComponete : GeradorComponente;
 
-  constructor(){
+  constructor(geradorComponete : GeradorComponente){
     this.contextoDados = new DataContext();
     
     this.repositorio = new RepositorioTarefaLocalStorage(this.contextoDados);
     
+    this.geradorComponete = geradorComponete;
     this.repositorio.inserir(this.gararTarefa());
     this.repositorio.inserir(this.gararTarefa());
   }
   inserir(): void {
-    throw new Error("Method not implemented.");
+        const telaCadastro : TelaCadastroTarefa = new TelaCadastroTarefa(this.geradorComponete);
   }
   editar(): void {
         
@@ -49,8 +53,8 @@ private obterTabelaDados() : Table {
   novaTabela.cabecalho(['ID', 'Título', 'Data Abertura', 'Data conclusão', 'Ações']);
 
   tarefas.forEach(tarefa => {
-    let btnEditar = new Btn(TipoBotao.Editar, 'editar-'+tarefa.id.toString()).ObterBotao();
-    let btnExcluir = new Btn(TipoBotao.Excluir, 'excluir-'+tarefa.id.toString()).ObterBotao();
+    let btnEditar = new Btn(TipoBotao.Editar, 'editar-'+tarefa.id.toString()).botao();
+    let btnExcluir = new Btn(TipoBotao.Excluir, 'excluir-'+tarefa.id.toString()).botao();
     btnEditar.outerHTML;
     novaTabela.corpo([
       tarefa.id.toString(),

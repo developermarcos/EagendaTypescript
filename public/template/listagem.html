@@ -68,38 +68,24 @@
       <div class="d-flex justify-content-between">
         <h1 class="h1">Tarefas</h1>
         <!-- Button trigger modal -->
-        <!-- <button type="button" class="btn btn-primary px-5" title="teste" aria-label="Cadastrar" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" id ="cadastrar" class="btn btn-primary px-5" data-bs-toggle="modal" data-bs-target="#modal-cadastro">
           Cadastrar
-        </button> -->
-        <a href="/template/tarefa/tarefa-cadastrar.html" class="btn btn-primary px-5">
-          Cadastrar
-        </a>
-
+        </button>
+        
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal-cadastro" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
+              
+              <!-- <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Cadastro Tarefa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body row">
-                <!-- <p>
-                  *Propriedades<br>
-                  1- prioridade = Select <br>
-                  2- Titulo <br>
-                  3- Data criação <br>
-                  4- Data Conclusão <br>
-                  5- Percentual <br><br>
-                  Regras<br>
-                  1- Percentual conclusão tarefa<br>
-                  2- Título deve ser único <br>
-                  3- Caso a prioridade não seja informada, seu valor padrão é Baixa <br>
-                </p> -->
-                <div class="d-flex gap-2">
+               <div class="d-flex gap-2">
                   <div class="mb-3 col-md-3">
                     <label for="" class="form-label">Prioridade</label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select id="prioridade" class="form-select" aria-label="Default select example">
                       <option selected></option>
                       <option value="1">Baixa</option>
                       <option value="2">Media</option>
@@ -108,18 +94,18 @@
                   </div>
                   <div class="mb-3 col-md-9">
                     <label for="" class="form-label">Título</label>
-                    <input type="text" class="form-control" id="" aria-describedby="titulo">
-                    <div id="" class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
+                    <input type="text" class="form-control" id="titulo" aria-describedby="titulo">
+                    <div class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
                   </div>
                 </div>
                 <div class="d-flex gap-2">
                   <div class="mb-3 col-md-4">
-                    <label for="" class="form-label">Data inicio</label>
+                    <label for="" id="data-inicio" class="form-label">Data inicio</label>
                     <input type="date" class="form-control" id="" aria-describedby="titulo">
                   </div>
                   <div class="mb-3 col-md-4">
                     <label for="" class="form-label">Data fim</label>
-                    <input type="date" class="form-control" id="" aria-describedby="titulo">
+                    <input type="date" id="data-conclusao" class="form-control" id="" aria-describedby="titulo">
                   </div>
                   <div class="mb-2">
                     <label for="" class="form-label">Concluído %</label>
@@ -129,7 +115,7 @@
                 <hr>
                 <div class="mb-3">
                   <label for="" class="form-label">Itens da Tarefa</label>
-                  <input readonly type="text" class="form-control" id="" aria-describedby="titulo">
+                  <input type="text" class="form-control" id="" aria-describedby="titulo">
                   <button class="btn btn-success mt-3">Adicionar item</button>
                 </div>
               </div>
@@ -168,7 +154,7 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary">Salvar</button>
-              </div>
+              </div> -->
               
             </div>
           </div>
@@ -176,7 +162,7 @@
       </div>
       <hr>
       <div class="shadow-lg p-3 mb-5 bg-body rounded" id="tabela-dados"></div>
-      <div class="shadow-lg p-3 mb-5 bg-body rounded">
+      <!-- <div class="shadow-lg p-3 mb-5 bg-body rounded">
         <table class="table">
           <thead>
             <tr>
@@ -224,7 +210,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
     </section>
   </main>
 </body>
