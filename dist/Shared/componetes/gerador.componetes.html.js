@@ -51,9 +51,10 @@ export class GeradorComponente {
         div.append(button);
         return div;
     }
-    button(titulo, classes, atributos) {
+    button(type, classes, atributos) {
         const botao = document.createElement('button');
-        botao.innerText = titulo;
+        botao.innerText = type;
+        botao.name = type;
         classes.forEach(classe => {
             botao.classList.add(classe);
         });

@@ -1,4 +1,5 @@
-import { Prioridade } from "../../../Tarefa/enum.prioridade.tarefa.js";
+import { Prioridade } from "../../Tarefa/enum.prioridade.tarefa.js";
+import { BtnTipo } from "./btn.type.js";
 
 export class GeradorComponente{
    
@@ -32,17 +33,16 @@ export class GeradorComponente{
 
     return label;
   }
-  input(type : string, classes : string[], id: string, readonly : boolean = false) : HTMLInputElement{
+  input(classes : string[], atributos : Map<string, string>) : HTMLInputElement{
     let input : HTMLInputElement = document.createElement('input');
     
     classes.forEach(classe => {
       input.classList.add(classe);
     });
-    input.type = type;
-    input.setAttribute('id', id);
-    input.readOnly = readonly;
-    //   <div class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
-   
+    
+    for (var [key, value] of atributos) {
+      input.setAttribute(key, value);
+    }
     return input;
   }
   
@@ -65,10 +65,12 @@ export class GeradorComponente{
 
     return div;
   }
-  button(titulo : string, classes : string[], atributos : Map<string, string>) : HTMLButtonElement{
+  button(type : BtnTipo, classes : string[], atributos : Map<string, string>) : HTMLButtonElement{
     const botao = document.createElement('button');
     
-    botao.innerText = titulo;
+    botao.innerText = type;
+
+    botao.name = type;
     
     classes.forEach(classe => {
       botao.classList.add(classe);

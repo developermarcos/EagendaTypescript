@@ -1,23 +1,31 @@
 export class RepositorioTarefaLocalStorage {
-    constructor(contextoDados) {
-        this.contextoDados = contextoDados;
-        this.tarefas = contextoDados.getDados('tarefas');
+    constructor() {
+        this.storage = localStorage;
+        this.tarefas = this.listarTodos();
+    }
+    gravar() {
+        const tarefasSerializadas = JSON.stringify(this.tarefas);
+        this.storage.setItem('tarefas', tarefasSerializadas);
     }
     inserir(novoRegistro) {
         this.tarefas.push(novoRegistro);
+        this.gravar();
     }
     editar(registroEditado) {
         let indexObjetoArray = this.tarefas.findIndex(x => x.id === registroEditado.id);
-        delete this.tarefas[indexObjetoArray];
-        this.tarefas.push(registroEditado);
-        this.tarefas = this.tarefas.sort(x => x.id);
+        this.tarefas[indexObjetoArray] = registroEditado;
+        this.gravar();
     }
     excluir(excluirRegistro) {
         let indexObjetoArray = this.tarefas.findIndex(x => x.id === excluirRegistro.id);
         delete this.tarefas[indexObjetoArray];
+        this.gravar();
     }
     listarTodos() {
-        return this.tarefas;
+        const dados = this.storage.getItem("tarefas");
+        if (!dados)
+            return [];
+        return JSON.parse(dados);
     }
     selecionarPorId(id) {
         return this.tarefas.filter(x => x.id === id)[0] || null;

@@ -5,5 +5,5 @@ export interface IRepositorioBase<T>{
   editar(registroEditado : T) : void;
   excluir(excluirRegistro : T) : void;
   listarTodos() : T[];
-  selecionarPorId(id : number) : T;
+  selecionarPorId(id : string) : T;
 }

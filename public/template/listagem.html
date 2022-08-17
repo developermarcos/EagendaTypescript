@@ -8,6 +8,7 @@
   <title>E-agenda</title>
   <!-- . -->
   <script type="module" src="../../dist/index.js" defer></script>
+  
 
   <!-- bootstrap -->
   <!-- CSS only -->
@@ -68,7 +69,7 @@
       <div class="d-flex justify-content-between">
         <h1 class="h1">Tarefas</h1>
         <!-- Button trigger modal -->
-        <button type="button" id ="cadastrar" class="btn btn-primary px-5" data-bs-toggle="modal" data-bs-target="#modal-cadastro">
+        <button name="Cadastrar" type="button" id ="btn-cadastrar" class="btn btn-primary px-5" data-bs-toggle="modal" data-bs-target="#modal-cadastro">
           Cadastrar
         </button>
         
@@ -76,141 +77,27 @@
         <div class="modal fade" id="modal-cadastro" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
-              
-              <!-- <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Cadastro Tarefa</h5>
+              <div class="modal-header">
+                <h5 class="modal-title" id="title-cadastro">[titulo_pagina_cadastro]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body row">
-               <div class="d-flex gap-2">
-                  <div class="mb-3 col-md-3">
-                    <label for="" class="form-label">Prioridade</label>
-                    <select id="prioridade" class="form-select" aria-label="Default select example">
-                      <option selected></option>
-                      <option value="1">Baixa</option>
-                      <option value="2">Media</option>
-                      <option value="3">Alta</option>
-                    </select>
-                  </div>
-                  <div class="mb-3 col-md-9">
-                    <label for="" class="form-label">Título</label>
-                    <input type="text" class="form-control" id="titulo" aria-describedby="titulo">
-                    <div class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
-                  </div>
-                </div>
-                <div class="d-flex gap-2">
-                  <div class="mb-3 col-md-4">
-                    <label for="" id="data-inicio" class="form-label">Data inicio</label>
-                    <input type="date" class="form-control" id="" aria-describedby="titulo">
-                  </div>
-                  <div class="mb-3 col-md-4">
-                    <label for="" class="form-label">Data fim</label>
-                    <input type="date" id="data-conclusao" class="form-control" id="" aria-describedby="titulo">
-                  </div>
-                  <div class="mb-2">
-                    <label for="" class="form-label">Concluído %</label>
-                    <input readonly type="text" class="form-control" id="" aria-describedby="titulo" value="50%">
-                  </div>
-                </div>
-                <hr>
-                <div class="mb-3">
-                  <label for="" class="form-label">Itens da Tarefa</label>
-                  <input type="text" class="form-control" id="" aria-describedby="titulo">
-                  <button class="btn btn-success mt-3">Adicionar item</button>
-                </div>
-              </div>
-              <div class="mb-3 px-4">
-                <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between">
-                    <div class="d-flex gap-1">
-                      <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                      <p>Item 1</p>
-                    </div>
-                    <button class="btn btn-danger">
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <div class="d-flex gap-1">
-                      <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                      <p>Item 2</p>
-                    </div>
-                    <button class="btn btn-danger">
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between">
-                    <div class="d-flex gap-1">
-                      <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                      <p>Item 3</p>
-                    </div>
-                    <button class="btn btn-danger">
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                  </li>
-                </ul>
-              </div>
+
+              <div class="modal-body row" id="body-modal">[Conteúdo]</div>
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Salvar</button>
-              </div> -->
+                <button type="button" class="btn btn-primary" id="btn-gravar">Salvar</button>
+              </div>
               
             </div>
           </div>
         </div>
       </div>
       <hr>
-      <div class="shadow-lg p-3 mb-5 bg-body rounded" id="tabela-dados"></div>
-      <!-- <div class="shadow-lg p-3 mb-5 bg-body rounded">
+      <div class="shadow-lg p-3 mb-5 bg-body rounded">
         <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Titulo</th>
-              <th scope="col">Inicio</th>
-              <th scope="col">Término</th>
-              <th scope="col">Conclusão %</th>
-              <th scope="col">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Churrasco da academia</td>
-              <td>01/10/2022</td>
-              <td>02/10/2022</td>
-              <td>0%</td>
-              <td>
-                <button class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Churrasco da academia</td>
-              <td>01/10/2022</td>
-              <td>02/10/2022</td>
-              <td>0%</td>
-              <td>
-                <button class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Churrasco da academia</td>
-              <td>01/10/2022</td>
-              <td>02/10/2022</td>
-              <td>0%</td>
-              <td>
-                <button class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></button>
-              </td>
-            </tr>
-          </tbody>
         </table>
-      </div> -->
+      </div>
     </section>
   </main>
 </body>

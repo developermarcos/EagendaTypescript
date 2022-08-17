@@ -1,4 +1,4 @@
-import { Item } from "./item.tarefa.js";
+import { Item } from "./model.item.tarefa.js";
 import { Prioridade } from "./enum.prioridade.tarefa.js";
 import { EntidadeBase } from "../Shared/entidadeBase.js";
 
@@ -8,11 +8,15 @@ export class Tarefa extends EntidadeBase{
   dataInicio : Date;
   dataTermino : Date;
   itens : Item[];
+  constructor(){
+    super();
+    this.itens = [];
+  }
 
-  // calcularPercentualConclusaoItens() {
-  //   if(!this.itens || this.itens.length == 0)
-  //     return 0;
+  calcularPercentualConclusaoItens() {
+    if(!this.itens || this.itens.length == 0)
+      return 0;
 
-  //   return this.itens.length / this.itens.filter(x => x.concluido === true).length;
-  // }
+    return this.itens.length / this.itens.filter(x => x.concluido === true).length;
+  }
 }

@@ -1,5 +1,6 @@
+import { Guid } from "./guid.model.js";
 export class EntidadeBase {
-    constructor(id) {
-        this.id = id;
+    constructor() {
+        this.id = new Guid().geradorNovoId();
     }
 }

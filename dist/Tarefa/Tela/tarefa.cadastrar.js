@@ -1,76 +1,128 @@
+// import { Btn } from "../../Shared/componetes/botao/btn.componente.js";
+import { BtnTipo } from "../../Shared/componetes/btn.type.js";
+import { GeradorComponente } from "../../Shared/componetes/gerador.componetes.html.js";
 import { Prioridade } from "../enum.prioridade.tarefa.js";
+import { Item } from "../model.item.tarefa.js";
+import { Tarefa } from "../model.tarefa.js";
 export class TelaCadastroTarefa {
-    constructor(geradorComponente) {
-        this.geradorComponente = geradorComponente;
+    constructor(titulo, repositorio, tarefa) {
+        this.repositorio = repositorio;
+        this.geradorComponente = new GeradorComponente();
         this.mapeadorBotao = new Map();
-        this.render();
+        this.bodyCadastro(titulo);
+        this.tarefa = tarefa;
+        const btnAdicionarItem = document.getElementById('adicionar-item');
+        if (btnAdicionarItem)
+            btnAdicionarItem.addEventListener('click', (_evt) => this.AdicionarItem());
     }
-    render(tarefaEditar = {}) {
-        const div = document.getElementsByClassName('modal-content')[0];
-        div.innerHTML = '';
-        div.append(this.geradorComponente.gerarCabecalhoModal('Tarefas', 'cadastro-tarefa'));
-        div.append(this.body());
-        div.append(this.Footer());
-    }
-    AdicionarItem(geradorComponente) {
-        console.log('aqui');
-        let ul = document.getElementById('lista-itens');
-        // let li = this.geradorComponente.li(['list-group-item', 'd-flex', 'justify-content-between']);
-        const li = this.geradorComponente.li(['list-group-item']);
-        let itensIncluidosDiv = geradorComponente.div(['d-flex', 'gap-1'], '');
-        itensIncluidosDiv.append(geradorComponente.input('checkbox', ['form-check-input'], '1', true));
-        itensIncluidosDiv.append(geradorComponente.p([]).innerText = 'item1');
+    AdicionarItem() {
+        var _a;
+        const li = this.geradorComponente.li(['list-group-item', 'd-flex', 'justify-content-between', 'align-items-center']);
+        const descricaoItem = document.getElementById('item-tarefa');
+        if (!descricaoItem)
+            return;
+        let itensIncluidosDiv = this.geradorComponente.div(['d-flex', 'gap-1'], '');
+        const mapeadorInput = new Map();
+        mapeadorInput.set('readonly', '');
+        mapeadorInput.set('type', 'checkbox');
+        mapeadorInput.set('value', descricaoItem.value);
+        itensIncluidosDiv.append(this.geradorComponente.input(['form-check-input'], mapeadorInput));
+        itensIncluidosDiv.append(this.geradorComponente.p([]).innerText = descricaoItem.value);
         li.append(itensIncluidosDiv);
-        // li.append(new Btn(TipoBotao.Excluir, 'Excluir').botao());
-        ul === null || ul === void 0 ? void 0 : ul.append(li);
+        this.mapeadorBotao.clear();
+        this.mapeadorBotao.set('type', 'button');
+        this.mapeadorBotao.set('id', 'excluir-item');
+        let botaoAdicionarItem = this.geradorComponente.button(BtnTipo.Excluir, ['btn', 'btn-danger'], this.mapeadorBotao);
+        li.append(botaoAdicionarItem);
+        (_a = this.itensUl) === null || _a === void 0 ? void 0 : _a.append(li);
     }
-    body() {
-        const corpoModal = this.geradorComponente.div(['modal-body', 'row'], '');
+    gravar(btnAdicionarItem) {
+        const prioridadeSelecionada = this.prioridadeSelect.options[this.prioridadeSelect.selectedIndex].value;
+        const tituloSelecionado = this.tituloInput.innerText;
+        const dataAberturaSelecionada = this.dataInicioInput.value;
+        const dataConclusaoSelecionada = this.dataConclusaoInput.value;
+        const itensSelecionadosInput = this.itensUl.querySelectorAll('input');
+        const itensSelecionados = [];
+        itensSelecionadosInput.forEach(itemSelecionado => {
+            let item = new Item();
+            item.titulo = itemSelecionado.value;
+            item.concluido = itemSelecionado.checked;
+            itensSelecionados.push(item);
+        });
+        const novaTarefa = new Tarefa();
+        novaTarefa.prioridade = prioridadeSelecionada;
+        novaTarefa.titulo = tituloSelecionado;
+        novaTarefa.dataInicio = new Date(dataAberturaSelecionada);
+        novaTarefa.dataTermino = new Date(dataConclusaoSelecionada);
+        itensSelecionados.forEach(item => {
+            novaTarefa.itens.push(item);
+        });
+        this.repositorio.inserir(novaTarefa);
+        const modal = document.getElementsByClassName("modal")[0];
+        const Background = document.getElementsByClassName("modal-backdrop fade show")[0];
+        modal.classList.add('d-none');
+        modal.classList.remove('show');
+        Background.classList.add('d-none');
+        modal.removeAttribute('aria-modal');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+    bodyCadastro(titulo) {
+        const tituloPagina = document.getElementById("title-cadastro");
+        if (tituloPagina) {
+            tituloPagina.innerText = titulo;
+        }
+        const corpoModal = document.getElementById("body-modal");
+        if (!corpoModal) {
+            return;
+        }
+        const mapeadorInput = new Map();
+        corpoModal.innerHTML = '';
         const labelDiv = this.geradorComponente.div(['mb-3', 'col-md-3'], '');
         labelDiv.append(this.geradorComponente.label('', 'form-label', 'Prioridade'));
-        labelDiv.append(this.geradorComponente.select(Object.keys(Prioridade), 'prioridade'));
+        labelDiv.append(this.prioridadeSelect = this.geradorComponente.select(Object.keys(Prioridade), 'prioridade'));
         corpoModal.append(labelDiv);
         const tituloDiv = this.geradorComponente.div(['mb-3', 'col-md-9'], '');
         tituloDiv.append(this.geradorComponente.label('', 'form-label', 'Titulo'));
-        tituloDiv.append(this.geradorComponente.input('text', ['form-control'], 'titulo'));
+        mapeadorInput.clear();
+        mapeadorInput.set('id', 'Titulo');
+        mapeadorInput.set('type', 'text');
+        tituloDiv.append(this.tituloInput = this.geradorComponente.input(['form-control'], mapeadorInput));
         corpoModal.append(tituloDiv);
         const dataInicioDiv = this.geradorComponente.div(['mb-3', 'col-md-4'], '');
         dataInicioDiv.append(this.geradorComponente.label('', 'form-label', 'Data inicio'));
-        dataInicioDiv.append(this.geradorComponente.input('date', ['form-control'], 'data-inicio'));
+        mapeadorInput.clear();
+        mapeadorInput.set('id', 'data-inicio');
+        mapeadorInput.set('type', 'date');
+        dataInicioDiv.append(this.dataInicioInput = this.geradorComponente.input(['form-control'], mapeadorInput));
         corpoModal.append(dataInicioDiv);
         const dataConclusaoDiv = this.geradorComponente.div(['mb-3', 'col-md-4'], '');
         dataConclusaoDiv.append(this.geradorComponente.label('', 'form-label', 'Data Termino'));
-        dataConclusaoDiv.append(this.geradorComponente.input('date', ['form-control'], 'data-conclusao'));
+        mapeadorInput.clear();
+        mapeadorInput.set('id', 'data-conclusao');
+        mapeadorInput.set('type', 'date');
+        dataConclusaoDiv.append(this.dataConclusaoInput = this.geradorComponente.input(['form-control'], mapeadorInput));
         corpoModal.append(dataConclusaoDiv);
         const percentualConcluidoDiv = this.geradorComponente.div(['mb-2', 'col-md-4'], '');
         percentualConcluidoDiv.append(this.geradorComponente.label('', 'form-label', 'Concluído %'));
-        percentualConcluidoDiv.append(this.geradorComponente.input('text', ['form-control'], 'percentual-concluido', true));
+        mapeadorInput.clear();
+        mapeadorInput.set('id', 'percentual-concluido');
+        mapeadorInput.set('type', 'text');
+        mapeadorInput.set('readonly', '');
+        percentualConcluidoDiv.append(this.geradorComponente.input(['form-control'], mapeadorInput));
         corpoModal.append(percentualConcluidoDiv);
         const itemTarefaDiv = this.geradorComponente.div(['mb-3'], '');
         itemTarefaDiv.append(this.geradorComponente.label('', 'form-label', 'Item Tarefa'));
-        itemTarefaDiv.append(this.geradorComponente.input('text', ['form-control', 'mb-3'], 'item-tarefa', false));
+        mapeadorInput.clear();
+        mapeadorInput.set('id', 'item-tarefa');
+        mapeadorInput.set('type', 'text');
+        itemTarefaDiv.append(this.geradorComponente.input(['form-control', 'mb-3'], mapeadorInput));
         this.mapeadorBotao.clear();
         this.mapeadorBotao.set('type', 'button');
         this.mapeadorBotao.set('id', 'adicionar-item');
-        let botaoAdicionarItem = this.geradorComponente.button('Adicionar', ['btn', 'btn-primary'], this.mapeadorBotao);
+        let botaoAdicionarItem = this.geradorComponente.button(BtnTipo.Adicionar, ['btn', 'btn-primary'], this.mapeadorBotao);
         itemTarefaDiv.append(botaoAdicionarItem);
         corpoModal.append(itemTarefaDiv);
-        const ul = this.geradorComponente.ul(['mb-3', 'px-3', 'col-12', 'list-group'], 'lista-itens');
-        corpoModal.append(ul);
-        return corpoModal;
-    }
-    Footer() {
-        const footerModal = this.geradorComponente.div(['modal-footer'], '');
-        this.mapeadorBotao.clear();
-        this.mapeadorBotao.set('id', '1');
-        this.mapeadorBotao.set('data-bs-dismiss', 'modal');
-        this.mapeadorBotao.set('type', 'button');
-        footerModal.append(this.geradorComponente.button('Salvar', ['btn', 'btn-primary'], this.mapeadorBotao));
-        this.mapeadorBotao.clear();
-        this.mapeadorBotao.set('id', '1');
-        this.mapeadorBotao.set('data-bs-dismiss', 'modal');
-        this.mapeadorBotao.set('type', 'button');
-        footerModal.append(this.geradorComponente.button('Voltar', ['btn', 'btn-secondary'], this.mapeadorBotao));
-        return footerModal;
+        this.itensUl = this.geradorComponente.ul(['mb-3', 'px-3', 'col-12', 'list-group'], 'lista-itens');
+        corpoModal.append(this.itensUl);
     }
 }
