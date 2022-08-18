@@ -25,7 +25,6 @@ botoes.forEach(btn => {
     const btnConvertido = btn as HTMLButtonElement;
     switch(btnConvertido.name){
       case BtnTipo.Cadastrar:
-        console.log("aqui");
         controladorTarefa.inserir();
         break;
       case BtnTipo.Editar:

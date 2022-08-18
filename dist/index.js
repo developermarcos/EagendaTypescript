@@ -16,7 +16,6 @@ botoes.forEach(btn => {
         const btnConvertido = btn;
         switch (btnConvertido.name) {
             case BtnTipo.Cadastrar:
-                console.log("aqui");
                 controladorTarefa.inserir();
                 break;
             case BtnTipo.Editar:

@@ -21,27 +21,29 @@ export class ControladorTarefa implements IControladorbase{
     this.tabela = document.querySelector('table') as HTMLTableElement;
   }
   inserir(): void {
-    let tarefa = new Tarefa();
-    let telaCadastro : TelaCadastroTarefa = new TelaCadastroTarefa("Cadastro de Tarefa", this.repositorio, tarefa);
+    let telaCadastro : TelaCadastroTarefa = new TelaCadastroTarefa("Cadastro de Tarefa", this.repositorio.inserir);
 
     let salvar = document.getElementById('btn-gravar') as HTMLButtonElement;
     if(!salvar)
       return;
 
-    salvar.addEventListener('click', (_evt) => telaCadastro.gravar(salvar));
+    salvar.addEventListener('click', (_evt) => telaCadastro.salvar());
   }
   editar(id : string): void {
     let tarefaEditar = this.repositorio.selecionarPorId(id);
+
     if(tarefaEditar == null){
       return;
     }
-    let telaCadastro : TelaCadastroTarefa = new TelaCadastroTarefa("Cadastro de Tarefa", this.repositorio, tarefaEditar);
+    let telaCadastro : TelaCadastroTarefa = new TelaCadastroTarefa("Cadastro de Tarefa", this.repositorio.editar);
+    telaCadastro.setTarefa(tarefaEditar);
 
     let salvar = document.getElementById('btn-gravar') as HTMLButtonElement;
+
     if(!salvar)
       return;
 
-    salvar.addEventListener('click', (_evt) => telaCadastro.gravar(salvar));
+    salvar.addEventListener('click', (_evt) => telaCadastro.salvar());
   }
   excluir(): void {
     console.log("excluir");

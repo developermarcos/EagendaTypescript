@@ -13,10 +13,20 @@ export class Tarefa extends EntidadeBase{
     this.itens = [];
   }
 
-  calcularPercentualConclusaoItens() {
+  calcularPercentualConclusaoItens() : number{
+
     if(!this.itens || this.itens.length == 0)
       return 0;
+      
+    let quatidadeTotalItens : number = this.itens.length;
+    let quatidadeItensConcluidos : number = 0;
 
-    return this.itens.length / this.itens.filter(x => x.concluido === true).length;
+    this.itens.forEach(item => {
+      if(item.concluido == true)
+        quatidadeItensConcluidos++;
+    });
+    return quatidadeTotalItens / quatidadeItensConcluidos * 100;
+
+    // return this.itens.length / this.itens.filter(x => x.concluido === true).length;
   }
 }

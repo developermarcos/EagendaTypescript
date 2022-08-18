@@ -6,6 +6,7 @@ export class TarefaListagem {
     }
     mapearObjeto() {
         this.mapeadorObjeto = new Map();
+        // this.mapeadorObjeto.set('id', 'ID');
         this.mapeadorObjeto.set('prioridade', 'Prioridade');
         this.mapeadorObjeto.set('titulo', 'Título');
         this.mapeadorObjeto.set('dataInicio', 'Abertura');
@@ -16,7 +17,6 @@ export class TarefaListagem {
         const linhaCabecalho = tableHead === null || tableHead === void 0 ? void 0 : tableHead.insertRow();
         for (var [key, value] of this.mapeadorObjeto) {
             let coluna = document.createElement('th');
-            ;
             coluna.append(value);
             linhaCabecalho.append(coluna);
         }
@@ -39,6 +39,8 @@ export class TarefaListagem {
             colunaAcoes.classList.add('d-flex');
             let mapeador = new Map();
             mapeador.set('value', tarefa.id);
+            mapeador.set('data-bs-toggle', 'modal');
+            mapeador.set('data-bs-target', '#modal-cadastro');
             colunaAcoes.append(new GeradorComponente().button(BtnTipo.Editar, ['btn', 'btn-success'], mapeador));
             mapeador.clear();
             mapeador.set('value', tarefa.id);
