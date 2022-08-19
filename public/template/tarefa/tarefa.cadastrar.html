@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-agenda</title>
+  <script type="module" src="../../../dist/index.js" defer></script>
+  <script type="module" src="../../../dist/tarefa/controller/tarefa.cadastrar.js" defer></script>
+</head>
+
+<body class="container-fluid">
+  <main class="row min-vh-100">
+    <my-header class="col-md-3 col-xl-2 d-flex p-0"></my-header>    
+    <section class="col p-md-5">
+      <h1 class="h1">Cadastro de Tarefa</h1>
+        <hr>
+        <form class="row w-50 m-auto shadow-lg p-3 mb-5 bg-body rounded" action="">
+          <div class="mb-3 col-md-3">
+            <label for="" class="form-label">Prioridade</label>
+            <select class="form-select" aria-label="Default select example">
+            </select>
+          </div>
+          <div class="mb-3 col-md-9">
+            <label for="" class="form-label">Título</label>
+            <input type="text" class="form-control" id="" aria-describedby="titulo">
+            <div id="" class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="" class="form-label">Data inicio</label>
+            <input type="date" class="form-control" id="" aria-describedby="titulo">
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="" class="form-label">Data fim</label>
+            <input type="date" class="form-control" id="" aria-describedby="titulo">
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="" class="form-label">Concluído %</label>
+            <input readonly type="text" class="form-control" id="" aria-describedby="titulo" value="">
+          </div>
+          <hr>
+          <div class="mb-3">
+            <label for="" class="form-label">Itens da Tarefa</label>
+            <input type="text" class="form-control" id="input-adicionar-item" aria-describedby="titulo">
+            <button class="btn btn-success mt-3" id="btn-adicionar-item">Adicionar item</button>
+          </div>
+          <div class="mb-3">
+            <ul id="itens-adicionados" class="list-group"></ul>
+          </div>
+          <div class="d-flex justify-content-end gap-1">
+            <a href="/template/tarefa/tarefa-listagem.html" class="btn btn-secondary">Fechar</a>
+            <button type="button" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>      
+    </section>
+  </main>
+</body>
+
+</html>

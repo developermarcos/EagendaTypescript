@@ -1,6 +1,6 @@
+import { EntidadeBase } from "../../Shared/entidadeBase.js";
 import { Item } from "./model.item.tarefa.js";
-import { Prioridade } from "./enum.prioridade.tarefa.js";
-import { EntidadeBase } from "../Shared/entidadeBase.js";
+import { Prioridade } from "./prioridade.enum.tarefa.js";
 
 export class Tarefa extends EntidadeBase{
   prioridade : Prioridade;
