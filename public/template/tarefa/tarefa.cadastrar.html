@@ -17,23 +17,26 @@
       <h1 class="h1">Cadastro de Tarefa</h1>
         <hr>
         <form class="row w-50 m-auto shadow-lg p-3 mb-5 bg-body rounded" action="">
+          <div id="mensagem" class="alert alert-warning d-none" role="alert">
+            
+          </div>
           <div class="mb-3 col-md-3">
-            <label for="" class="form-label">Prioridade</label>
+            <label for="prioridade" class="form-label">Prioridade</label>
             <select class="form-select" aria-label="Default select example">
             </select>
           </div>
           <div class="mb-3 col-md-9">
-            <label for="" class="form-label">Título</label>
-            <input type="text" class="form-control" id="" aria-describedby="titulo">
-            <div id="" class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
+            <label for="titulo" class="form-label">Título</label>
+            <input type="text" class="form-control" id="titulo" aria-describedby="titulo">
+            <div class="form-text">Títlo de tarefas devem ser únicos no sistema!</div>
           </div>
           <div class="mb-3 col-md-4">
-            <label for="" class="form-label">Data inicio</label>
-            <input type="date" class="form-control" id="" aria-describedby="titulo">
+            <label required for="Data inicio" class="form-label">Data inicio</label>
+            <input type="date" class="form-control" id="data-inicio" aria-describedby="titulo">
           </div>
           <div class="mb-3 col-md-4">
-            <label for="" class="form-label">Data fim</label>
-            <input type="date" class="form-control" id="" aria-describedby="titulo">
+            <label for="Data conclusao" class="form-label">Data copnclusão</label>
+            <input type="date" class="form-control" id="data-conclusao" aria-describedby="data conclusao">
           </div>
           <div class="mb-3 col-md-4">
             <label for="" class="form-label">Concluído %</label>
@@ -50,7 +53,7 @@
           </div>
           <div class="d-flex justify-content-end gap-1">
             <a href="/template/tarefa/tarefa-listagem.html" class="btn btn-secondary">Fechar</a>
-            <button type="button" class="btn btn-primary">Salvar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
           </div>
         </form>      
     </section>

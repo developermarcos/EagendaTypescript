@@ -6,8 +6,8 @@ export class Tarefa extends EntidadeBase{
   prioridade : Prioridade;
   titulo : string;
   dataInicio : Date;
-  dataTermino : Date;
-  itens : Item[];
+  dataTermino? : Date;
+  itens? : Item[];
   constructor(){
     super();
     this.itens = [];
