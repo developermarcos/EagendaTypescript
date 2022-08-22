@@ -45,14 +45,33 @@ class TarefaListagem {
                 let coluna = linhaBody === null || linhaBody === void 0 ? void 0 : linhaBody.insertCell();
                 coluna.append(valorColuna === null || valorColuna === void 0 ? void 0 : valorColuna.value);
             }
-            let colunaAcoes = linhaBody.insertCell();
-            colunaAcoes.classList.add('gap-2');
-            colunaAcoes.classList.add('d-flex');
-            const btnEditar = `<a class="btn btn-success" href="${this.linkCadastro}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-pen-to-square"></i></a>`;
-            const btnExcluir = `<a class="btn btn-danger" href="${this.linkExclusao}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-trash-can"></i></a>`;
-            colunaAcoes.innerHTML = btnEditar + btnExcluir;
+            this.configurarAcoes(linhaBody, tarefa);
         });
         tabela === null || tabela === void 0 ? void 0 : tabela.append(tablebody);
+    }
+    configurarAcoes(linhaBody, tarefa) {
+        let colunaAcoes = linhaBody.insertCell();
+        colunaAcoes.classList.add('gap-2');
+        colunaAcoes.classList.add('d-flex');
+        const btnEditar = document.createElement('a');
+        btnEditar.classList.value = 'btn btn-success';
+        btnEditar.href = `${this.linkCadastro}?id=${tarefa.id}`;
+        btnEditar.setAttribute('value', tarefa.id);
+        btnEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+        colunaAcoes.append(btnEditar);
+        const btnExcluir = document.createElement('button');
+        btnExcluir.classList.value = 'btn btn-danger';
+        btnExcluir.setAttribute('id', tarefa.id);
+        btnExcluir.innerHTML = '<i class="fa-solid fa-trash-can">';
+        btnExcluir.addEventListener('click', (_evt) => {
+            let excluir = confirm(`Deseja realmente excluir o registro '${tarefa.titulo}'`);
+            if (excluir) {
+                const repositorio = new RepositorioTarefaLocalStorage();
+                repositorio.excluir(tarefa.id);
+                window.location.reload();
+            }
+        });
+        colunaAcoes.append(btnExcluir);
     }
 }
 new TarefaListagem();

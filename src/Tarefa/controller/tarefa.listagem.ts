@@ -1,5 +1,6 @@
 import { IListavelHtml } from "../../Shared/iListavel.html.js";
 import { RepositorioTarefaLocalStorage } from "../infra/repositorio.localStorage.tarefa.js";
+import { IRepositorioTarefa } from "../model/iRepositorio.tarefa.js";
 import { Tarefa } from "../model/model.tarefa.js";
 
 
@@ -58,15 +59,40 @@ class TarefaListagem implements IListavelHtml{
         coluna.append(valorColuna?.value);
       }
       
-      let colunaAcoes = linhaBody.insertCell();
-      colunaAcoes.classList.add('gap-2');
-      colunaAcoes.classList.add('d-flex');
-      const btnEditar = `<a class="btn btn-success" href="${this.linkCadastro}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-pen-to-square"></i></a>`;
-      const btnExcluir = `<a class="btn btn-danger" href="${this.linkExclusao}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-trash-can"></i></a>`;
-      colunaAcoes.innerHTML = btnEditar+btnExcluir;
+      this.configurarAcoes(linhaBody, tarefa);
     });
     
     tabela?.append(tablebody);
+  }
+
+  private configurarAcoes(linhaBody: HTMLTableRowElement, tarefa: Tarefa) {
+    let colunaAcoes = linhaBody.insertCell();
+    colunaAcoes.classList.add('gap-2');
+    colunaAcoes.classList.add('d-flex');
+
+    const btnEditar = document.createElement('a');
+    btnEditar.classList.value = 'btn btn-success';
+    btnEditar.href = `${this.linkCadastro}?id=${tarefa.id}`;
+    btnEditar.setAttribute('value', tarefa.id);
+    btnEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    colunaAcoes.append(btnEditar);
+
+    const btnExcluir = document.createElement('button');
+    btnExcluir.classList.value = 'btn btn-danger';
+    btnExcluir.setAttribute('id', tarefa.id);
+    btnExcluir.innerHTML = '<i class="fa-solid fa-trash-can">';
+
+    btnExcluir.addEventListener('click', (_evt) => {
+      let excluir : boolean = confirm(`Deseja realmente excluir o registro '${tarefa.titulo}'`);
+
+      if(excluir){
+        const repositorio : IRepositorioTarefa = new RepositorioTarefaLocalStorage();
+        repositorio.excluir(tarefa.id);
+        window.location.reload();
+      }
+    });
+
+    colunaAcoes.append(btnExcluir);
   }
 }
 
