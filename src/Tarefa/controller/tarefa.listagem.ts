@@ -6,13 +6,24 @@ import { Tarefa } from "../model/model.tarefa.js";
 
 class TarefaListagem implements IListavelHtml{
   private linkCadastro = './tarefa.cadastrar.html';
-  private linkExclusao = '';
-  constructor(){
+  private repositorio : IRepositorioTarefa;
+  
+  constructor(repositorio : IRepositorioTarefa){
+    this.repositorio = repositorio;
+    this.configurarTela();
+    this.atualizarListagem();
+
     this.configurarLinkCadastro();
     
     this.atualizarHeadTabela(this.mapeadorObjeto());
 
     this.atualizarBodyTabela(this.mapeadorObjeto());
+  }
+  configurarTela(): void {
+    console.log('refatorar configurar tela');
+  }
+  atualizarListagem(): void {
+    console.log('refatorar atualizar listagem');
   }
   configurarLinkCadastro(): void {
     const linkCadastrar = document.getElementById('cadastrar-link') as HTMLAnchorElement;
@@ -49,7 +60,7 @@ class TarefaListagem implements IListavelHtml{
 
     let tablebody = document.createElement('tbody');
 
-    const tarefas = new RepositorioTarefaLocalStorage().listarTodos();
+    const tarefas = this.repositorio.listarTodos();
     
     tarefas.forEach(tarefa => {
       const linhaBody = tablebody?.insertRow();
@@ -86,8 +97,7 @@ class TarefaListagem implements IListavelHtml{
       let excluir : boolean = confirm(`Deseja realmente excluir o registro '${tarefa.titulo}'`);
 
       if(excluir){
-        const repositorio : IRepositorioTarefa = new RepositorioTarefaLocalStorage();
-        repositorio.excluir(tarefa.id);
+        this.repositorio.excluir(tarefa.id);
         window.location.reload();
       }
     });
@@ -96,4 +106,4 @@ class TarefaListagem implements IListavelHtml{
   }
 }
 
-new TarefaListagem();
+new TarefaListagem(new RepositorioTarefaLocalStorage());

@@ -7,6 +7,8 @@ export class TelaCadastroTarefa {
         this.paginaListagem = "/public/template/tarefa/tarefa.listagem.html";
         this.repositorio = repositorioTarefa;
         this.idSelecionado = id;
+        this.preencherPrioridades();
+        this.configurarEventos();
         if (id) {
             this.tarefa = this.repositorio.selecionarPorId(id);
             if (!this.tarefa)
@@ -16,8 +18,6 @@ export class TelaCadastroTarefa {
         else {
             this.tarefa = new Tarefa();
         }
-        this.preencherPrioridades();
-        this.configurarEventos();
     }
     configurarTela() {
         const selectPrioridade = document.querySelector('select');
@@ -84,7 +84,9 @@ export class TelaCadastroTarefa {
         input.classList.add('me-1');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('value', novoItem.titulo);
+        input.checked = novoItem.concluido ? novoItem.concluido : false;
         divItem.append(input);
+        console.log(input);
         divItem.append(novoItem.titulo);
         const botaoExclusaoItem = `<button class="btn btn-danger excluir-itens-tarefa" value="${novoItem.titulo}"> <i class="fa-solid fa-trash-can"></i> </button>`;
         li.append(divItem);
@@ -158,6 +160,7 @@ export class TelaCadastroTarefa {
         if (dataConclusaoValida) {
             this.tarefa.dataTermino = dataConclusao;
         }
+        this.tarefa.itens = [];
         itensSelecionados.forEach(item => {
             var _a;
             (_a = this.tarefa.itens) === null || _a === void 0 ? void 0 : _a.push(item);

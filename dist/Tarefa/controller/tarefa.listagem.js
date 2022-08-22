@@ -1,11 +1,19 @@
 import { RepositorioTarefaLocalStorage } from "../infra/repositorio.localStorage.tarefa.js";
 class TarefaListagem {
-    constructor() {
+    constructor(repositorio) {
         this.linkCadastro = './tarefa.cadastrar.html';
-        this.linkExclusao = '';
+        this.repositorio = repositorio;
+        this.configurarTela();
+        this.atualizarListagem();
         this.configurarLinkCadastro();
         this.atualizarHeadTabela(this.mapeadorObjeto());
         this.atualizarBodyTabela(this.mapeadorObjeto());
+    }
+    configurarTela() {
+        console.log('refatorar configurar tela');
+    }
+    atualizarListagem() {
+        console.log('refatorar atualizar listagem');
     }
     configurarLinkCadastro() {
         const linkCadastrar = document.getElementById('cadastrar-link');
@@ -37,7 +45,7 @@ class TarefaListagem {
     atualizarBodyTabela(mapeadorObjeto) {
         const tabela = document.querySelector('table');
         let tablebody = document.createElement('tbody');
-        const tarefas = new RepositorioTarefaLocalStorage().listarTodos();
+        const tarefas = this.repositorio.listarTodos();
         tarefas.forEach(tarefa => {
             const linhaBody = tablebody === null || tablebody === void 0 ? void 0 : tablebody.insertRow();
             for (var [key, value] of mapeadorObjeto) {
@@ -66,12 +74,11 @@ class TarefaListagem {
         btnExcluir.addEventListener('click', (_evt) => {
             let excluir = confirm(`Deseja realmente excluir o registro '${tarefa.titulo}'`);
             if (excluir) {
-                const repositorio = new RepositorioTarefaLocalStorage();
-                repositorio.excluir(tarefa.id);
+                this.repositorio.excluir(tarefa.id);
                 window.location.reload();
             }
         });
         colunaAcoes.append(btnExcluir);
     }
 }
-new TarefaListagem();
+new TarefaListagem(new RepositorioTarefaLocalStorage());

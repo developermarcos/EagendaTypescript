@@ -16,7 +16,7 @@ class MyHeader extends HTMLElement {
               Tarefas
             </a>
           </li>
-          <li>
+          <li style="display:none;">
             <a href="#" class="nav-link text-white">
               Contatos
             </a>

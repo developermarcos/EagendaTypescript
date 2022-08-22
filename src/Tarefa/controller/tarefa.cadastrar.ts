@@ -1,6 +1,5 @@
 
 
-import { IRepositorioSerializavel } from "../../Shared/repositorio.serializavel.interface.js";
 import { RepositorioTarefaLocalStorage } from "../infra/repositorio.localStorage.tarefa.js";
 import { IRepositorioTarefa } from "../model/iRepositorio.tarefa.js";
 import { Item } from "../model/model.item.tarefa.js";
@@ -19,6 +18,9 @@ export class TelaCadastroTarefa{
     this.repositorio = repositorioTarefa;
     this.idSelecionado = id;
     
+    this.preencherPrioridades();
+    this.configurarEventos();
+    
     if(id){
       this.tarefa = this.repositorio.selecionarPorId(id); 
 
@@ -30,10 +32,6 @@ export class TelaCadastroTarefa{
     }else{
       this.tarefa = new Tarefa();
     }
-    
-    this.preencherPrioridades();
-    this.configurarEventos();
-    
   }
   private configurarTela() {
     const selectPrioridade = document.querySelector('select') as HTMLSelectElement;
@@ -119,7 +117,9 @@ export class TelaCadastroTarefa{
     input.classList.add('me-1');
     input.setAttribute('type', 'checkbox');
     input.setAttribute('value', novoItem.titulo);
+    input.checked = novoItem.concluido ? novoItem.concluido : false;
     divItem.append(input);
+    console.log(input);
     divItem.append(novoItem.titulo);
     
     const botaoExclusaoItem = `<button class="btn btn-danger excluir-itens-tarefa" value="${novoItem.titulo}"> <i class="fa-solid fa-trash-can"></i> </button>`;
@@ -210,6 +210,7 @@ export class TelaCadastroTarefa{
     if(dataConclusaoValida){
       this.tarefa.dataTermino = dataConclusao;
     }
+    this.tarefa.itens = [];
     itensSelecionados.forEach(item => {
       this.tarefa.itens?.push(item);
     })

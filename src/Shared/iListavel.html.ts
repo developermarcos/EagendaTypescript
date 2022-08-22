@@ -3,4 +3,6 @@ export interface IListavelHtml{
   atualizarHeadTabela(mapeadorObjeto : Map<string, string>) : void;
   atualizarBodyTabela(mapeadorObjeto : Map<string, string>) : void;
   configurarLinkCadastro() : void;
+  configurarTela(): void;
+  atualizarListagem() : void;
 }
