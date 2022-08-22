@@ -11,6 +11,7 @@ export class RepositorioTarefaLocalStorage implements IRepositorioTarefa, IRepos
     this.storage = localStorage;
     this.tarefas = this.listarTodos();
   }
+  
   gravar(): void {
     const tarefasSerializadas = JSON.stringify(this.tarefas);
     this.storage.setItem('tarefas', tarefasSerializadas);
@@ -29,10 +30,8 @@ export class RepositorioTarefaLocalStorage implements IRepositorioTarefa, IRepos
     this.gravar();
   }
 
-  excluir(excluirRegistro: Tarefa): void {
-    let indexObjetoArray = this.tarefas.findIndex(x => x.id === excluirRegistro.id);
-
-    delete this.tarefas[indexObjetoArray];
+  excluir(idExcluir: string): void {
+    this.tarefas = this.tarefas.filter(x => x.id !== idExcluir);
 
     this.gravar();
   }

@@ -1,13 +1,15 @@
 import { RepositorioTarefaLocalStorage } from "../infra/repositorio.localStorage.tarefa.js";
 class TarefaListagem {
     constructor() {
+        this.linkCadastro = './tarefa.cadastrar.html';
+        this.linkExclusao = '';
         this.configurarLinkCadastro();
         this.atualizarHeadTabela(this.mapeadorObjeto());
         this.atualizarBodyTabela(this.mapeadorObjeto());
     }
     configurarLinkCadastro() {
         const linkCadastrar = document.getElementById('cadastrar-link');
-        linkCadastrar.href = "./tarefa.cadastrar.html";
+        linkCadastrar.href = this.linkCadastro;
     }
     mapeadorObjeto() {
         let mapeadorObjeto = new Map();
@@ -15,7 +17,7 @@ class TarefaListagem {
         mapeadorObjeto.set('prioridade', 'Prioridade');
         mapeadorObjeto.set('titulo', 'Título');
         mapeadorObjeto.set('dataInicio', 'Abertura');
-        mapeadorObjeto.set('dataTermino', 'Conclusão');
+        mapeadorObjeto.set('dataTermino', 'Data termino');
         return mapeadorObjeto;
     }
     atualizarHeadTabela(mapeadorObjeto) {
@@ -46,8 +48,8 @@ class TarefaListagem {
             let colunaAcoes = linhaBody.insertCell();
             colunaAcoes.classList.add('gap-2');
             colunaAcoes.classList.add('d-flex');
-            const btnEditar = `<button class="btn btn-success" value="${tarefa.id}"><i class="fa-solid fa-pen-to-square"></i></button>`;
-            const btnExcluir = `<button class="btn btn-danger" value="${tarefa.id}"><i class="fa-solid fa-trash-can"></i></button>`;
+            const btnEditar = `<a class="btn btn-success" href="${this.linkCadastro}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-pen-to-square"></i></a>`;
+            const btnExcluir = `<a class="btn btn-danger" href="${this.linkExclusao}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-trash-can"></i></a>`;
             colunaAcoes.innerHTML = btnEditar + btnExcluir;
         });
         tabela === null || tabela === void 0 ? void 0 : tabela.append(tablebody);

@@ -12,7 +12,7 @@ class MyHeader extends HTMLElement {
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
           <li class="nav-item">
-            <a href="/template/tarefa/tarefa-listagem.html" class="nav-link active" aria-current="page">
+            <a href="/public/template/tarefa/tarefa.listagem.html" class="nav-link active" aria-current="page">
               Tarefas
             </a>
           </li>

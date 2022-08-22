@@ -3,8 +3,61 @@ import { Item } from "../model/model.item.tarefa.js";
 import { Tarefa } from "../model/model.tarefa.js";
 import { Prioridade } from "../model/prioridade.enum.tarefa.js";
 export class TelaCadastroTarefa {
-    constructor() {
+    constructor(repositorioTarefa, id) {
+        this.paginaListagem = "/public/template/tarefa/tarefa.listagem.html";
+        this.repositorio = repositorioTarefa;
+        this.idSelecionado = id;
+        if (id) {
+            this.tarefa = this.repositorio.selecionarPorId(id);
+            if (!this.tarefa)
+                window.location.href = this.paginaListagem;
+            this.configurarTela();
+        }
+        else {
+            this.tarefa = new Tarefa();
+        }
         this.preencherPrioridades();
+        this.configurarEventos();
+    }
+    configurarTela() {
+        const selectPrioridade = document.querySelector('select');
+        selectPrioridade.value = this.tarefa.prioridade;
+        const titulo = document.getElementById('titulo');
+        titulo.value = this.tarefa.titulo;
+        const dataInicio = document.getElementById('data-inicio');
+        const dataInicioString = new Date(this.tarefa.dataInicio).toISOString().substring(0, 10);
+        dataInicio.value = dataInicioString;
+        const dataConclusao = document.getElementById('data-conclusao');
+        dataConclusao.value = this.tarefa.dataTermino ? new Date(this.tarefa.dataTermino).toISOString().substring(0, 10) : '';
+        if (this.tarefa.itens) {
+            this.tarefa.itens.forEach(item => {
+                this.adicionarItem(item);
+                this.adicionarEventoUltimoBotao();
+            });
+        }
+    }
+    configurarEventos() {
+        const btnAdicionarItem = document.getElementById('btn-adicionar-item');
+        const formCadastroTarefa = document.querySelector('form');
+        formCadastroTarefa === null || formCadastroTarefa === void 0 ? void 0 : formCadastroTarefa.addEventListener('submit', (_evt) => {
+            _evt.preventDefault();
+            this.salvar();
+        });
+        btnAdicionarItem === null || btnAdicionarItem === void 0 ? void 0 : btnAdicionarItem.addEventListener('click', (_evt) => {
+            _evt.preventDefault();
+            let descricaoItem = document.getElementById('input-adicionar-item');
+            const novoItem = new Item(descricaoItem.value);
+            this.adicionarItem(novoItem);
+            this.adicionarEventoUltimoBotao();
+        });
+    }
+    adicionarEventoUltimoBotao() {
+        const botoes = document.getElementsByClassName('excluir-itens-tarefa');
+        let ultimoBotaoAdicionado = botoes[botoes.length - 1];
+        ultimoBotaoAdicionado.addEventListener('click', (_evt) => {
+            _evt.preventDefault();
+            this.removerItem(ultimoBotaoAdicionado.value);
+        });
     }
     preencherPrioridades() {
         const selectPrioridade = document.querySelector('select');
@@ -16,7 +69,7 @@ export class TelaCadastroTarefa {
             selectPrioridade === null || selectPrioridade === void 0 ? void 0 : selectPrioridade.append(opcao);
         });
     }
-    gerarNovoItemLista(descricaoItem) {
+    gerarNovoItemLista(novoItem) {
         const li = document.createElement('li');
         const classesLista = ['list-group-item', 'd-flex', 'justify-content-between', 'align-items-center'];
         classesLista.forEach(classe => {
@@ -30,17 +83,16 @@ export class TelaCadastroTarefa {
         input.classList.add('gap-1');
         input.classList.add('me-1');
         input.setAttribute('type', 'checkbox');
-        input.setAttribute('value', descricaoItem);
+        input.setAttribute('value', novoItem.titulo);
         divItem.append(input);
-        divItem.append(descricaoItem);
-        const botaoExclusaoItem = `<button class="btn btn-danger excluir-itens-tarefa" value="${descricaoItem}"> <i class="fa-solid fa-trash-can"></i> </button>`;
+        divItem.append(novoItem.titulo);
+        const botaoExclusaoItem = `<button class="btn btn-danger excluir-itens-tarefa" value="${novoItem.titulo}"> <i class="fa-solid fa-trash-can"></i> </button>`;
         li.append(divItem);
         li.innerHTML += botaoExclusaoItem;
         return li;
     }
-    adicionarItem() {
-        const inputAdicionarItem = document.getElementById('input-adicionar-item');
-        const novoItemLista = this.gerarNovoItemLista(inputAdicionarItem === null || inputAdicionarItem === void 0 ? void 0 : inputAdicionarItem.value);
+    adicionarItem(item) {
+        const novoItemLista = this.gerarNovoItemLista(item);
         const ulItensAdicionados = document.getElementById('itens-adicionados');
         ulItensAdicionados.append(novoItemLista);
     }
@@ -76,10 +128,9 @@ export class TelaCadastroTarefa {
         const itensSelecionados = [];
         if (itensSelecionadosInput) {
             for (let i = 0; i < itensSelecionadosInput.length; i++) {
-                let novoItem = new Item();
-                novoItem.id = i + 1;
-                novoItem.titulo = itensSelecionadosInput[i].value;
-                novoItem.concluido = itensSelecionadosInput[i].checked;
+                const titulo = itensSelecionadosInput[i].value;
+                const concluido = itensSelecionadosInput[i].checked;
+                let novoItem = new Item(titulo, concluido);
                 itensSelecionados.push(novoItem);
             }
         }
@@ -111,29 +162,15 @@ export class TelaCadastroTarefa {
             var _a;
             (_a = this.tarefa.itens) === null || _a === void 0 ? void 0 : _a.push(item);
         });
-        const repositorio = new RepositorioTarefaLocalStorage();
-        repositorio.inserir(this.tarefa);
+        if (this.idSelecionado) {
+            this.repositorio.editar(this.tarefa);
+        }
+        else {
+            this.repositorio.inserir(this.tarefa);
+        }
         document.location.href = "./tarefa.listagem.html";
     }
 }
-const tarefaCadastro = new TelaCadastroTarefa();
-tarefaCadastro.tarefa = new Tarefa();
-const btnAdicionarItem = document.getElementById('btn-adicionar-item');
-const formCadastroTarefa = document.querySelector('form');
-formCadastroTarefa === null || formCadastroTarefa === void 0 ? void 0 : formCadastroTarefa.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    tarefaCadastro.salvar();
-});
-btnAdicionarItem === null || btnAdicionarItem === void 0 ? void 0 : btnAdicionarItem.addEventListener('click', function (e) {
-    e.preventDefault();
-    tarefaCadastro.adicionarItem();
-    adicionarEventoUltimoBotao();
-});
-function adicionarEventoUltimoBotao() {
-    const botoes = document.getElementsByClassName('excluir-itens-tarefa');
-    let ultimoBotaoAdicionado = botoes[botoes.length - 1];
-    ultimoBotaoAdicionado.addEventListener('click', (evt) => {
-        evt.preventDefault();
-        tarefaCadastro.removerItem(ultimoBotaoAdicionado.value);
-    });
-}
+const params = new URLSearchParams(window.location.search);
+let id = params.get("id");
+const tarefaCadastro = new TelaCadastroTarefa(new RepositorioTarefaLocalStorage(), id);

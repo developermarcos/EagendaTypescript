@@ -4,6 +4,8 @@ import { Tarefa } from "../model/model.tarefa.js";
 
 
 class TarefaListagem implements IListavelHtml{
+  private linkCadastro = './tarefa.cadastrar.html';
+  private linkExclusao = '';
   constructor(){
     this.configurarLinkCadastro();
     
@@ -13,7 +15,7 @@ class TarefaListagem implements IListavelHtml{
   }
   configurarLinkCadastro(): void {
     const linkCadastrar = document.getElementById('cadastrar-link') as HTMLAnchorElement;
-    linkCadastrar.href = "./tarefa.cadastrar.html";
+    linkCadastrar.href = this.linkCadastro;
   }
   mapeadorObjeto(): Map<string, string> {
     let mapeadorObjeto = new Map();
@@ -21,7 +23,7 @@ class TarefaListagem implements IListavelHtml{
     mapeadorObjeto.set('prioridade', 'Prioridade');
     mapeadorObjeto.set('titulo', 'Título');
     mapeadorObjeto.set('dataInicio', 'Abertura');
-    mapeadorObjeto.set('dataTermino', 'Conclusão');
+    mapeadorObjeto.set('dataTermino', 'Data termino');
     return mapeadorObjeto;
   }
   atualizarHeadTabela(mapeadorObjeto : Map<string, string>): void {
@@ -59,8 +61,8 @@ class TarefaListagem implements IListavelHtml{
       let colunaAcoes = linhaBody.insertCell();
       colunaAcoes.classList.add('gap-2');
       colunaAcoes.classList.add('d-flex');
-      const btnEditar = `<button class="btn btn-success" value="${tarefa.id}"><i class="fa-solid fa-pen-to-square"></i></button>`;
-      const btnExcluir = `<button class="btn btn-danger" value="${tarefa.id}"><i class="fa-solid fa-trash-can"></i></button>`;
+      const btnEditar = `<a class="btn btn-success" href="${this.linkCadastro}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-pen-to-square"></i></a>`;
+      const btnExcluir = `<a class="btn btn-danger" href="${this.linkExclusao}?id=${tarefa.id}" value="${tarefa.id}"><i class="fa-solid fa-trash-can"></i></a>`;
       colunaAcoes.innerHTML = btnEditar+btnExcluir;
     });
     

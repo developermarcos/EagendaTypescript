@@ -16,9 +16,8 @@ export class RepositorioTarefaLocalStorage {
         this.tarefas[indexObjetoArray] = registroEditado;
         this.gravar();
     }
-    excluir(excluirRegistro) {
-        let indexObjetoArray = this.tarefas.findIndex(x => x.id === excluirRegistro.id);
-        delete this.tarefas[indexObjetoArray];
+    excluir(idExcluir) {
+        this.tarefas = this.tarefas.filter(x => x.id !== idExcluir);
         this.gravar();
     }
     listarTodos() {

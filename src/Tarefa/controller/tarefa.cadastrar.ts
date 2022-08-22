@@ -9,9 +9,86 @@ import { Prioridade } from "../model/prioridade.enum.tarefa.js";
 
 
 export class TelaCadastroTarefa{
-  tarefa : Tarefa;
-  constructor(){
+  private tarefa : Tarefa;
+  private repositorio : IRepositorioTarefa;
+  private paginaListagem : string = "/public/template/tarefa/tarefa.listagem.html";
+  private idSelecionado: string | undefined;
+  
+  constructor(repositorioTarefa : IRepositorioTarefa, id? : string){
+    
+    this.repositorio = repositorioTarefa;
+    this.idSelecionado = id;
+    
+    if(id){
+      this.tarefa = this.repositorio.selecionarPorId(id); 
+
+      if(!this.tarefa)
+        window.location.href = this.paginaListagem;
+
+      this.configurarTela();
+
+    }else{
+      this.tarefa = new Tarefa();
+    }
+    
     this.preencherPrioridades();
+    this.configurarEventos();
+    
+  }
+  private configurarTela() {
+    const selectPrioridade = document.querySelector('select') as HTMLSelectElement;
+    selectPrioridade.value = this.tarefa.prioridade;
+
+    const titulo = document.getElementById('titulo') as HTMLInputElement;
+    titulo.value = this.tarefa.titulo;
+
+    const dataInicio = document.getElementById('data-inicio') as HTMLDataElement;
+    const dataInicioString = new Date(this.tarefa.dataInicio).toISOString().substring(0,10);
+    dataInicio.value = dataInicioString;
+
+    const dataConclusao = document.getElementById('data-conclusao') as HTMLDataElement;
+    dataConclusao.value = this.tarefa.dataTermino ? new Date(this.tarefa.dataTermino).toISOString().substring(0,10) : '';
+
+    if(this.tarefa.itens){
+      this.tarefa.itens.forEach(item => {
+        this.adicionarItem(item);
+        this.adicionarEventoUltimoBotao();
+      });
+    }
+  }
+  private configurarEventos(){
+    const btnAdicionarItem = document.getElementById('btn-adicionar-item');
+
+    const formCadastroTarefa = document.querySelector('form');
+
+    formCadastroTarefa?.addEventListener('submit', (_evt)=>{
+      _evt.preventDefault();
+      this.salvar();
+    });
+
+    btnAdicionarItem?.addEventListener('click', (_evt)=>{
+      _evt.preventDefault();
+      
+      let descricaoItem = document.getElementById('input-adicionar-item') as HTMLInputElement;
+      
+      const novoItem = new Item(descricaoItem.value);
+
+      this.adicionarItem(novoItem);
+
+      this.adicionarEventoUltimoBotao();  
+    });
+  }
+
+  private adicionarEventoUltimoBotao() {
+
+    const botoes = document.getElementsByClassName('excluir-itens-tarefa');
+
+    let ultimoBotaoAdicionado = botoes[botoes.length - 1] as HTMLButtonElement;
+
+    ultimoBotaoAdicionado.addEventListener('click', (_evt) => {
+      _evt.preventDefault();
+      this.removerItem(ultimoBotaoAdicionado.value);
+    });
   }
 
   private preencherPrioridades() {
@@ -25,7 +102,7 @@ export class TelaCadastroTarefa{
     });
   }
 
-  private gerarNovoItemLista(descricaoItem : string) : HTMLLIElement{
+  private gerarNovoItemLista(novoItem : Item) : HTMLLIElement{
     const li = document.createElement('li');
     const classesLista = ['list-group-item', 'd-flex', 'justify-content-between', 'align-items-center'];
     classesLista.forEach(classe => {
@@ -41,11 +118,11 @@ export class TelaCadastroTarefa{
     input.classList.add('gap-1');
     input.classList.add('me-1');
     input.setAttribute('type', 'checkbox');
-    input.setAttribute('value', descricaoItem);
+    input.setAttribute('value', novoItem.titulo);
     divItem.append(input);
-    divItem.append(descricaoItem);
+    divItem.append(novoItem.titulo);
     
-    const botaoExclusaoItem = `<button class="btn btn-danger excluir-itens-tarefa" value="${descricaoItem}"> <i class="fa-solid fa-trash-can"></i> </button>`;
+    const botaoExclusaoItem = `<button class="btn btn-danger excluir-itens-tarefa" value="${novoItem.titulo}"> <i class="fa-solid fa-trash-can"></i> </button>`;
 
     li.append(divItem);
     li.innerHTML += botaoExclusaoItem;
@@ -53,11 +130,9 @@ export class TelaCadastroTarefa{
     return li;
   }  
 
-  adicionarItem() {
+  adicionarItem(item : Item) {
     
-    const inputAdicionarItem = document.getElementById('input-adicionar-item') as HTMLInputElement;
-    
-    const novoItemLista = this.gerarNovoItemLista(inputAdicionarItem?.value);
+    const novoItemLista = this.gerarNovoItemLista(item);
     
     const ulItensAdicionados = document.getElementById('itens-adicionados') as HTMLUListElement;
 
@@ -101,10 +176,10 @@ export class TelaCadastroTarefa{
 
     if(itensSelecionadosInput){
       for (let i = 0; i < itensSelecionadosInput.length; i++) {
-        let novoItem = new Item();
-        novoItem.id= i+1;
-        novoItem.titulo= itensSelecionadosInput[i].value;
-        novoItem.concluido = itensSelecionadosInput[i].checked;
+        const titulo= itensSelecionadosInput[i].value;
+        const concluido = itensSelecionadosInput[i].checked;
+
+        let novoItem = new Item(titulo, concluido);
         itensSelecionados.push(novoItem);
       }
     }
@@ -138,43 +213,18 @@ export class TelaCadastroTarefa{
     itensSelecionados.forEach(item => {
       this.tarefa.itens?.push(item);
     })
-    
-    const repositorio : IRepositorioTarefa = new RepositorioTarefaLocalStorage();
-
-    repositorio.inserir(this.tarefa);
+    if(this.idSelecionado){
+      this.repositorio.editar(this.tarefa);
+    }else{
+      this.repositorio.inserir(this.tarefa);
+    }
 
     document.location.href = "./tarefa.listagem.html";
   }
 }
 
-const tarefaCadastro = new TelaCadastroTarefa();
+const params = new URLSearchParams(window.location.search);
 
-tarefaCadastro.tarefa = new Tarefa();
+let id = params.get("id") as string;
 
-const btnAdicionarItem = document.getElementById('btn-adicionar-item');
-
-const formCadastroTarefa = document.querySelector('form');
-
-formCadastroTarefa?.addEventListener('submit', (evt)=>{
-  evt.preventDefault();
-  tarefaCadastro.salvar();
-});
-
-btnAdicionarItem?.addEventListener('click', function(e){
-  e.preventDefault();
-  tarefaCadastro.adicionarItem();
-
-  adicionarEventoUltimoBotao();  
-});
-
-function adicionarEventoUltimoBotao() {
-
-  const botoes = document.getElementsByClassName('excluir-itens-tarefa');
-
-  let ultimoBotaoAdicionado = botoes[botoes.length - 1] as HTMLButtonElement;
-
-  ultimoBotaoAdicionado.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    tarefaCadastro.removerItem(ultimoBotaoAdicionado.value);
-  });
-}
+const tarefaCadastro = new TelaCadastroTarefa(new RepositorioTarefaLocalStorage(), id);
