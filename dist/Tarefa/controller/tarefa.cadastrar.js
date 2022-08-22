@@ -7,34 +7,49 @@ export class TelaCadastroTarefa {
         this.paginaListagem = "/public/template/tarefa/tarefa.listagem.html";
         this.repositorio = repositorioTarefa;
         this.idSelecionado = id;
-        this.preencherPrioridades();
-        this.configurarEventos();
+        this.configurarTela();
         if (id) {
             this.tarefa = this.repositorio.selecionarPorId(id);
             if (!this.tarefa)
                 window.location.href = this.paginaListagem;
-            this.configurarTela();
         }
         else {
             this.tarefa = new Tarefa();
         }
+        this.atualizarTela();
     }
     configurarTela() {
-        const selectPrioridade = document.querySelector('select');
-        selectPrioridade.value = this.tarefa.prioridade;
-        const titulo = document.getElementById('titulo');
-        titulo.value = this.tarefa.titulo;
-        const dataInicio = document.getElementById('data-inicio');
-        const dataInicioString = new Date(this.tarefa.dataInicio).toISOString().substring(0, 10);
-        dataInicio.value = dataInicioString;
-        const dataConclusao = document.getElementById('data-conclusao');
-        dataConclusao.value = this.tarefa.dataTermino ? new Date(this.tarefa.dataTermino).toISOString().substring(0, 10) : '';
+        this.preencherPrioridades();
+        this.configurarEventos();
+    }
+    atualizarTela() {
+        this.selectPrioridade = document.querySelector('select');
+        this.selectPrioridade.value = this.tarefa.prioridade ? this.tarefa.prioridade : this.selectPrioridade.value;
+        this.titulo = document.getElementById('titulo');
+        this.titulo.value = !this.tarefa.titulo ? '' : this.tarefa.prioridade;
+        this.dataInicio = document.getElementById('data-inicio');
+        const dataInicioString = this.tarefa.dataInicio ? new Date(this.tarefa.dataInicio).toISOString().substring(0, 10) : '';
+        this.dataInicio.value = dataInicioString != '' ? dataInicioString : '';
+        this.dataConclusao = document.getElementById('data-conclusao');
+        const dataConclusaoString = this.tarefa.dataTermino ? new Date(this.tarefa.dataTermino).toISOString().substring(0, 10) : '';
+        this.dataConclusao.value = dataConclusaoString != '' ? dataConclusaoString : '';
         if (this.tarefa.itens) {
             this.tarefa.itens.forEach(item => {
                 this.adicionarItem(item);
                 this.adicionarEventoUltimoBotao();
             });
         }
+    }
+    preencherPrioridades() {
+        this.selectPrioridade = document.querySelector('select');
+        const prioridades = Object.getOwnPropertyNames(Prioridade);
+        prioridades.forEach(prioridade => {
+            var _a;
+            const opcao = document.createElement('option');
+            opcao.value = prioridade;
+            opcao.innerText = prioridade;
+            (_a = this.selectPrioridade) === null || _a === void 0 ? void 0 : _a.append(opcao);
+        });
     }
     configurarEventos() {
         const btnAdicionarItem = document.getElementById('btn-adicionar-item');
@@ -56,20 +71,15 @@ export class TelaCadastroTarefa {
         let ultimoBotaoAdicionado = botoes[botoes.length - 1];
         ultimoBotaoAdicionado.addEventListener('click', (_evt) => {
             _evt.preventDefault();
-            this.removerItem(ultimoBotaoAdicionado.value);
+            this.removerItemHtml(ultimoBotaoAdicionado.value);
         });
     }
-    preencherPrioridades() {
-        const selectPrioridade = document.querySelector('select');
-        const prioridades = Object.getOwnPropertyNames(Prioridade);
-        prioridades.forEach(prioridade => {
-            const opcao = document.createElement('option');
-            opcao.value = prioridade;
-            opcao.innerText = prioridade;
-            selectPrioridade === null || selectPrioridade === void 0 ? void 0 : selectPrioridade.append(opcao);
-        });
+    adicionarItem(item) {
+        const novoItemLista = this.gerarNovoItemHtml(item);
+        this.ulItensAdicionados = document.getElementById('itens-adicionados');
+        this.ulItensAdicionados.append(novoItemLista);
     }
-    gerarNovoItemLista(novoItem) {
+    gerarNovoItemHtml(novoItem) {
         const li = document.createElement('li');
         const classesLista = ['list-group-item', 'd-flex', 'justify-content-between', 'align-items-center'];
         classesLista.forEach(classe => {
@@ -93,12 +103,7 @@ export class TelaCadastroTarefa {
         li.innerHTML += botaoExclusaoItem;
         return li;
     }
-    adicionarItem(item) {
-        const novoItemLista = this.gerarNovoItemLista(item);
-        const ulItensAdicionados = document.getElementById('itens-adicionados');
-        ulItensAdicionados.append(novoItemLista);
-    }
-    removerItem(value) {
+    removerItemHtml(value) {
         var _a;
         if (!value)
             return;
@@ -116,17 +121,9 @@ export class TelaCadastroTarefa {
         });
     }
     salvar() {
-        var _a, _b, _c;
-        const selectPrioridade = document.querySelector('select');
-        const prioridadeSelecionada = selectPrioridade === null || selectPrioridade === void 0 ? void 0 : selectPrioridade.options[selectPrioridade.selectedIndex];
-        const tituloInput = document.getElementById('titulo');
-        const dataInicioInput = document.getElementById('data-inicio');
-        const dataInicio = new Date(dataInicioInput.value);
-        let dataInicioValida = Date.parse(dataInicioInput.value);
-        const dataConclusaoInput = document.getElementById('data-conclusao');
-        const dataConclusao = new Date(dataConclusaoInput.value);
-        let dataConclusaoValida = Date.parse(dataConclusaoInput.value);
-        const itensSelecionadosInput = (_a = document.getElementById('itens-adicionados')) === null || _a === void 0 ? void 0 : _a.getElementsByTagName('input');
+        var _a, _b, _c, _d, _e, _f;
+        // const itensSelecionadosInput = document.getElementById('itens-adicionados')?.getElementsByTagName('input');
+        const itensSelecionadosInput = this.ulItensAdicionados.getElementsByTagName('input');
         const itensSelecionados = [];
         if (itensSelecionadosInput) {
             for (let i = 0; i < itensSelecionadosInput.length; i++) {
@@ -137,14 +134,15 @@ export class TelaCadastroTarefa {
             }
         }
         let mensagens = [];
-        if (!(prioridadeSelecionada === null || prioridadeSelecionada === void 0 ? void 0 : prioridadeSelecionada.value))
+        if (!((_b = (_a = this.selectPrioridade) === null || _a === void 0 ? void 0 : _a.options[this.selectPrioridade.selectedIndex]) === null || _b === void 0 ? void 0 : _b.value))
             mensagens.push("Campo 'Prioridade' é obrigatório!");
-        if (!(tituloInput === null || tituloInput === void 0 ? void 0 : tituloInput.value))
+        if (!((_c = this.titulo) === null || _c === void 0 ? void 0 : _c.value))
             mensagens.push("Campo 'Título' é obrigatório!");
+        let dataInicioValida = Date.parse(this.dataInicio.value);
         if (isNaN(dataInicioValida))
             mensagens.push("Campo 'Data início' é obrigatório!");
         if (mensagens.length > 0) {
-            (_b = document.getElementById('mensagem')) === null || _b === void 0 ? void 0 : _b.classList.remove('d-none');
+            (_d = document.getElementById('mensagem')) === null || _d === void 0 ? void 0 : _d.classList.remove('d-none');
             mensagens.forEach(mensagem => {
                 var _a;
                 let p = document.createElement('p');
@@ -153,12 +151,12 @@ export class TelaCadastroTarefa {
             });
             return;
         }
-        (_c = document.getElementById('mensagem')) === null || _c === void 0 ? void 0 : _c.classList.add('d-none');
-        this.tarefa.titulo = tituloInput.value;
-        this.tarefa.prioridade = prioridadeSelecionada.value;
-        this.tarefa.dataInicio = dataInicio;
-        if (dataConclusaoValida) {
-            this.tarefa.dataTermino = dataConclusao;
+        (_e = document.getElementById('mensagem')) === null || _e === void 0 ? void 0 : _e.classList.add('d-none');
+        this.tarefa.titulo = this.titulo.value;
+        this.tarefa.prioridade = (_f = this.selectPrioridade) === null || _f === void 0 ? void 0 : _f.options[this.selectPrioridade.selectedIndex].value;
+        this.tarefa.dataInicio = new Date(this.dataInicio.value);
+        if (Date.parse(this.dataConclusao.value)) {
+            this.tarefa.dataTermino = new Date(this.dataConclusao.value);
         }
         this.tarefa.itens = [];
         itensSelecionados.forEach(item => {

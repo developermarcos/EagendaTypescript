@@ -1,5 +1,6 @@
 
 
+import { IPaginaCreate } from "../../Shared/pagina.create.interface.js";
 import { RepositorioTarefaLocalStorage } from "../infra/repositorio.localStorage.tarefa.js";
 import { IRepositorioTarefa } from "../model/iRepositorio.tarefa.js";
 import { Item } from "../model/model.item.tarefa.js";
@@ -7,45 +8,55 @@ import { Tarefa } from "../model/model.tarefa.js";
 import { Prioridade } from "../model/prioridade.enum.tarefa.js";
 
 
-export class TelaCadastroTarefa{
+export class TelaCadastroTarefa implements IPaginaCreate{
   private tarefa : Tarefa;
   private repositorio : IRepositorioTarefa;
   private paginaListagem : string = "/public/template/tarefa/tarefa.listagem.html";
   private idSelecionado: string | undefined;
+  protected selectPrioridade: HTMLSelectElement;
+  protected titulo: HTMLInputElement;
+  protected dataInicio: HTMLDataElement;
+  protected dataConclusao: HTMLDataElement;
+  protected ulItensAdicionados: HTMLUListElement;
   
   constructor(repositorioTarefa : IRepositorioTarefa, id? : string){
     
     this.repositorio = repositorioTarefa;
     this.idSelecionado = id;
     
-    this.preencherPrioridades();
-    this.configurarEventos();
+    this.configurarTela();
     
     if(id){
-      this.tarefa = this.repositorio.selecionarPorId(id); 
-
+      this.tarefa = this.repositorio.selecionarPorId(id);
+      
       if(!this.tarefa)
-        window.location.href = this.paginaListagem;
-
-      this.configurarTela();
-
+      window.location.href = this.paginaListagem;
+      
     }else{
       this.tarefa = new Tarefa();
     }
+    this.atualizarTela();
   }
-  private configurarTela() {
-    const selectPrioridade = document.querySelector('select') as HTMLSelectElement;
-    selectPrioridade.value = this.tarefa.prioridade;
+  configurarTela(): void {
+    
+    this.preencherPrioridades();
 
-    const titulo = document.getElementById('titulo') as HTMLInputElement;
-    titulo.value = this.tarefa.titulo;
+    this.configurarEventos();
+  }
+  atualizarTela(): void {
+    this.selectPrioridade = document.querySelector('select') as HTMLSelectElement;
+    this.selectPrioridade.value = this.tarefa.prioridade ? this.tarefa.prioridade : this.selectPrioridade.value;
 
-    const dataInicio = document.getElementById('data-inicio') as HTMLDataElement;
-    const dataInicioString = new Date(this.tarefa.dataInicio).toISOString().substring(0,10);
-    dataInicio.value = dataInicioString;
+    this.titulo = document.getElementById('titulo') as HTMLInputElement;
+    this.titulo.value = !this.tarefa.titulo ? '' : this.tarefa.prioridade;
 
-    const dataConclusao = document.getElementById('data-conclusao') as HTMLDataElement;
-    dataConclusao.value = this.tarefa.dataTermino ? new Date(this.tarefa.dataTermino).toISOString().substring(0,10) : '';
+    this.dataInicio = document.getElementById('data-inicio') as HTMLDataElement;
+    const dataInicioString = this.tarefa.dataInicio ? new Date(this.tarefa.dataInicio).toISOString().substring(0,10) : '';
+    this.dataInicio.value = dataInicioString != '' ? dataInicioString : '';
+
+    this.dataConclusao = document.getElementById('data-conclusao') as HTMLDataElement;
+    const dataConclusaoString = this.tarefa.dataTermino ? new Date(this.tarefa.dataTermino).toISOString().substring(0,10) : '';
+    this.dataConclusao.value = dataConclusaoString != '' ? dataConclusaoString : '';
 
     if(this.tarefa.itens){
       this.tarefa.itens.forEach(item => {
@@ -53,6 +64,16 @@ export class TelaCadastroTarefa{
         this.adicionarEventoUltimoBotao();
       });
     }
+  }
+  private preencherPrioridades() {
+    this.selectPrioridade = document.querySelector('select') as HTMLSelectElement;
+    const prioridades = Object.getOwnPropertyNames(Prioridade);
+    prioridades.forEach(prioridade => {
+      const opcao = document.createElement('option');
+      opcao.value = prioridade;
+      opcao.innerText = prioridade
+      this.selectPrioridade?.append(opcao);
+    });
   }
   private configurarEventos(){
     const btnAdicionarItem = document.getElementById('btn-adicionar-item');
@@ -76,7 +97,6 @@ export class TelaCadastroTarefa{
       this.adicionarEventoUltimoBotao();  
     });
   }
-
   private adicionarEventoUltimoBotao() {
 
     const botoes = document.getElementsByClassName('excluir-itens-tarefa');
@@ -85,22 +105,18 @@ export class TelaCadastroTarefa{
 
     ultimoBotaoAdicionado.addEventListener('click', (_evt) => {
       _evt.preventDefault();
-      this.removerItem(ultimoBotaoAdicionado.value);
+      this.removerItemHtml(ultimoBotaoAdicionado.value);
     });
   }
+  private adicionarItem(item : Item) {
+    
+    const novoItemLista = this.gerarNovoItemHtml(item);
+    
+    this.ulItensAdicionados = document.getElementById('itens-adicionados') as HTMLUListElement;
 
-  private preencherPrioridades() {
-    const selectPrioridade = document.querySelector('select');
-    const prioridades = Object.getOwnPropertyNames(Prioridade);
-    prioridades.forEach(prioridade => {
-      const opcao = document.createElement('option');
-      opcao.value = prioridade;
-      opcao.innerText = prioridade
-      selectPrioridade?.append(opcao);
-    });
+    this.ulItensAdicionados.append(novoItemLista);
   }
-
-  private gerarNovoItemLista(novoItem : Item) : HTMLLIElement{
+  private gerarNovoItemHtml(novoItem : Item) : HTMLLIElement{
     const li = document.createElement('li');
     const classesLista = ['list-group-item', 'd-flex', 'justify-content-between', 'align-items-center'];
     classesLista.forEach(classe => {
@@ -128,18 +144,8 @@ export class TelaCadastroTarefa{
     li.innerHTML += botaoExclusaoItem;
 
     return li;
-  }  
-
-  adicionarItem(item : Item) {
-    
-    const novoItemLista = this.gerarNovoItemLista(item);
-    
-    const ulItensAdicionados = document.getElementById('itens-adicionados') as HTMLUListElement;
-
-    ulItensAdicionados.append(novoItemLista);
-  }
-
-  removerItem(value: string) {
+  } 
+  private removerItemHtml(value: string) {
     if(!value)
       return;
 
@@ -160,18 +166,9 @@ export class TelaCadastroTarefa{
       ulItensAdicionados.append(item);
     });
   }
-  
-  salvar(){
-    const selectPrioridade = document.querySelector('select') as HTMLSelectElement;
-    const prioridadeSelecionada = selectPrioridade?.options[selectPrioridade.selectedIndex] as HTMLOptionElement;
-    const tituloInput = document.getElementById('titulo') as HTMLInputElement;
-    const dataInicioInput = document.getElementById('data-inicio') as HTMLDataElement;
-    const dataInicio = new Date(dataInicioInput.value);
-    let dataInicioValida = Date.parse(dataInicioInput.value);
-    const dataConclusaoInput = document.getElementById('data-conclusao') as HTMLDataElement;
-    const dataConclusao = new Date(dataConclusaoInput.value);
-    let dataConclusaoValida = Date.parse(dataConclusaoInput.value);
-    const itensSelecionadosInput = document.getElementById('itens-adicionados')?.getElementsByTagName('input');
+  private salvar(){
+    // const itensSelecionadosInput = document.getElementById('itens-adicionados')?.getElementsByTagName('input');
+    const itensSelecionadosInput = this.ulItensAdicionados.getElementsByTagName('input');
     const itensSelecionados : Item[] = [];
 
     if(itensSelecionadosInput){
@@ -185,11 +182,12 @@ export class TelaCadastroTarefa{
     }
     let mensagens : string[] = [];
 
-    if(!prioridadeSelecionada?.value)
+    if(!this.selectPrioridade?.options[this.selectPrioridade.selectedIndex]?.value)
       mensagens.push("Campo 'Prioridade' é obrigatório!");
-    if(!tituloInput?.value)
+    if(!this.titulo?.value)
       mensagens.push("Campo 'Título' é obrigatório!");
 
+    let dataInicioValida = Date.parse(this.dataInicio.value);
     if(isNaN(dataInicioValida))
       mensagens.push("Campo 'Data início' é obrigatório!");
     
@@ -204,16 +202,17 @@ export class TelaCadastroTarefa{
     }
     document.getElementById('mensagem')?.classList.add('d-none');
     
-    this.tarefa.titulo = tituloInput.value;
-    this.tarefa.prioridade = prioridadeSelecionada.value as Prioridade;
-    this.tarefa.dataInicio = dataInicio;
-    if(dataConclusaoValida){
-      this.tarefa.dataTermino = dataConclusao;
+    this.tarefa.titulo = this.titulo.value;
+    this.tarefa.prioridade = this.selectPrioridade?.options[this.selectPrioridade.selectedIndex].value as Prioridade;
+    this.tarefa.dataInicio = new Date(this.dataInicio.value);
+    if(Date.parse(this.dataConclusao.value)){
+      this.tarefa.dataTermino = new Date(this.dataConclusao.value);
     }
     this.tarefa.itens = [];
     itensSelecionados.forEach(item => {
       this.tarefa.itens?.push(item);
-    })
+    });
+
     if(this.idSelecionado){
       this.repositorio.editar(this.tarefa);
     }else{

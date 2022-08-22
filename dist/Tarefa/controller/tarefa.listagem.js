@@ -4,21 +4,17 @@ class TarefaListagem {
         this.linkCadastro = './tarefa.cadastrar.html';
         this.repositorio = repositorio;
         this.configurarTela();
-        this.atualizarListagem();
-        this.configurarLinkCadastro();
-        this.atualizarHeadTabela(this.mapeadorObjeto());
+        this.atualizarTabela();
+    }
+    atualizarTabela() {
         this.atualizarBodyTabela(this.mapeadorObjeto());
     }
     configurarTela() {
-        console.log('refatorar configurar tela');
-    }
-    atualizarListagem() {
-        console.log('refatorar atualizar listagem');
-    }
-    configurarLinkCadastro() {
         const linkCadastrar = document.getElementById('cadastrar-link');
         linkCadastrar.href = this.linkCadastro;
+        this.atualizarHeadTabela(this.mapeadorObjeto());
     }
+    // métodos privados
     mapeadorObjeto() {
         let mapeadorObjeto = new Map();
         // this.mapeadorObjeto.set('id', 'ID');

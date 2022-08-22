@@ -1,35 +1,31 @@
-import { IListavelHtml } from "../../Shared/iListavel.html.js";
+import { IPaginaListavel } from "../../Shared/pagina.list.interface.js";
 import { RepositorioTarefaLocalStorage } from "../infra/repositorio.localStorage.tarefa.js";
 import { IRepositorioTarefa } from "../model/iRepositorio.tarefa.js";
 import { Tarefa } from "../model/model.tarefa.js";
 
 
-class TarefaListagem implements IListavelHtml{
+class TarefaListagem implements IPaginaListavel{
   private linkCadastro = './tarefa.cadastrar.html';
   private repositorio : IRepositorioTarefa;
   
   constructor(repositorio : IRepositorioTarefa){
     this.repositorio = repositorio;
     this.configurarTela();
-    this.atualizarListagem();
-
-    this.configurarLinkCadastro();
+    this.atualizarTabela();
     
-    this.atualizarHeadTabela(this.mapeadorObjeto());
-
+  }
+  atualizarTabela(): void {
     this.atualizarBodyTabela(this.mapeadorObjeto());
   }
   configurarTela(): void {
-    console.log('refatorar configurar tela');
-  }
-  atualizarListagem(): void {
-    console.log('refatorar atualizar listagem');
-  }
-  configurarLinkCadastro(): void {
     const linkCadastrar = document.getElementById('cadastrar-link') as HTMLAnchorElement;
     linkCadastrar.href = this.linkCadastro;
+
+    this.atualizarHeadTabela(this.mapeadorObjeto());
   }
-  mapeadorObjeto(): Map<string, string> {
+
+  // métodos privados
+  private mapeadorObjeto(): Map<string, string> {
     let mapeadorObjeto = new Map();
     // this.mapeadorObjeto.set('id', 'ID');
     mapeadorObjeto.set('prioridade', 'Prioridade');
@@ -38,7 +34,7 @@ class TarefaListagem implements IListavelHtml{
     mapeadorObjeto.set('dataTermino', 'Data termino');
     return mapeadorObjeto;
   }
-  atualizarHeadTabela(mapeadorObjeto : Map<string, string>): void {
+  private atualizarHeadTabela(mapeadorObjeto : Map<string, string>): void {
     const table = document.querySelector('table') as HTMLTableElement;
     const tableHead = document.createElement('thead');
     const linhaCabecalho = tableHead?.insertRow();
@@ -55,7 +51,7 @@ class TarefaListagem implements IListavelHtml{
     
     table.append(tableHead);
   }
-  atualizarBodyTabela(mapeadorObjeto : Map<string, string>): void {
+  private atualizarBodyTabela(mapeadorObjeto : Map<string, string>): void {
     const tabela = document.querySelector('table');
 
     let tablebody = document.createElement('tbody');
@@ -75,7 +71,6 @@ class TarefaListagem implements IListavelHtml{
     
     tabela?.append(tablebody);
   }
-
   private configurarAcoes(linhaBody: HTMLTableRowElement, tarefa: Tarefa) {
     let colunaAcoes = linhaBody.insertCell();
     colunaAcoes.classList.add('gap-2');
@@ -104,6 +99,7 @@ class TarefaListagem implements IListavelHtml{
 
     colunaAcoes.append(btnExcluir);
   }
+  // Métodos privados
 }
 
 new TarefaListagem(new RepositorioTarefaLocalStorage());
